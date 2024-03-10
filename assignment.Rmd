@@ -19,11 +19,47 @@ Please submit your answers on GitHub Classroom.
 
 1. _(5.2 from ROS)_ __Continuous probability simulation:__ The logarithms of weights (in pounds) of men in the United States are approximately normally distributed with mean 5.13 and standard deviation 0.17; women’s log weights are approximately normally distributed with mean 4.96 and standard deviation 0.20. Suppose 10 adults selected at random step on an elevator with a capacity of 1750 pounds. What is the probability that their total weight exceeds this limit?
 
+```{r message=FALSE, warning=FALSE}
+#what we need to know: how many men, and how many women there will be ,how much the men and women will weight and what the probability of their weight being more than 1750 is: 
+set.seed(1)
+N <- 10
+n_sims <- 100000
+freefall <- rep(NA, n_sims)
+for (f in 1:n_sims) {
+  totalweight <- rep(NA, N)
+  male <- rbinom(N, 1, 0.51)
+  for (w in 1:N) {
+    weights <- ifelse(male==1, rnorm(N, 5.13, 0.17), rnorm(N, 4.96, 0.20))
+    totalweight[w] <- sum(exp(weights))
+  }
+  freefall[f] <- ifelse(1750<totalweight, 1, 0)
+}
+sum(freefall)/n_sims
+```
+
+The probability that 10 random adults' total weight exceeds the limit of 1750 pounds is 0,059. 
 ---
+
 
 2. _(5.6 from ROS)_ __Propagation of uncertainty:__ We use a highly idealized setting to illustrate the use of simulations in combining uncertainties. Suppose a company changes its technology for widget production, and a study estimates the cost savings at \$5 per unit, but with a standard error of \$4. Furthermore, a forecast estimates the size of the market (that is, the number of widgets that will be sold) at 40 000, with a standard error of 10 000. Assuming these two sources of uncertainty are independent, use simulation to estimate the total amount of money saved by the new product (that is, savings per unit, multiplied by size of the market).
 
+
+```{r message=FALSE, warning=FALSE}
+#money saved: 1-9$
+#number of widgets sold: 30000-50000
+set.seed(12)
+n_sims <- 100000
+profit <- rep(NA, n_sims)
+for (m in 1:n_sims) {
+  profit_1product <- rnorm(1, 5, 4)
+  market <- rnorm(1, 40000, 10000)
+  profit[m] <- (profit_1product*market)
+}
+mean(profit)
+```
+The total amount of money saved by the new product is 200137.1$
 ---
+
 
 3. _(5.10 from ROS)_ __Inference for a ratio of parameters:__ A (hypothetical) study compares the costs and effectiveness of two different medical treatments.
 
@@ -34,7 +70,91 @@ Please submit your answers on GitHub Classroom.
     Inference is desired for the incremental cost-effectiveness ratio: the difference between the average costs of the two treatments, divided by the difference between their average effectiveness, a problem discussed further by Heitjan, Moskowitz, and Whang (1999).
 
     (a) Create 1000 simulation draws of the cost difference and the effectiveness difference, and make a scatterplot of these draws.
-    (b) Use simulation to come up with an estimate, 50% interval, and 95% interval for the incremental cost-effectiveness ratio.
-    (c) Repeat, changing the standard error on the difference in effectiveness to 2.0.
 
+```{r message=FALSE, warning=FALSE}
+set.seed(123)
+N <- 1000
+diff_costs <- rnorm(N, 600, 400)
+diff_eff <- rnorm(N, 3.0, 1.0)
+df <- data.frame(DC = diff_costs, DE = diff_eff)
+
+Scatter <- df %>% 
+  ggplot(aes(x = DC, y = DE)) +
+  geom_point(alpha = 0.6, color = "#003333")+
+  labs(title = "1000 simulations of the cost difference and the effectiveness difference", x = "The Cost difference", y = "The Effectiveness difference")
+  
+print(Scatter)
+
+```
+   
+   
+   
+    (b) Use simulation to come up with an estimate, 50% interval, and 95% interval for the incremental cost-effectiveness ratio.
+   
+```{r message=FALSE, warning=FALSE}
+set.seed(1234)
+n <- 1000
+diff_c <- c()
+diff_e <- c()
+
+for (q in 1:n) {
+diff_cost <- rbind(diff_c, rnorm(n, 600, 400))
+diff_effe <- rbind(diff_e, rnorm(n, 3.0, 1.0))
+}
+
+inc_ratio <- diff_cost/diff_effe
+
+estimate <- mean(inc_ratio)
+se <- sd(inc_ratio)/sqrt(n)
+int50 <- estimate + qt(c(0.25, 0.75), n-1)*se
+int95 <- estimate + qt(c(0.05, 0.95), n-1)*se
+
+print(estimate)
+print(int50)
+print(int95)
+
+```
+
+By using simulation, a possible estimate for the incremental cost-effectiveness ratio is 240.218, and a possible 50% interval for the incremental cost-effetiveness ratio is 233.096 and 247.341, and a possible 95% interval for the incremental cost-effetiveness ratio is 222.839 and 257.597.
+
+
+   
+    (c) Repeat, changing the standard error on the difference in effectiveness to 2.0.
+```{r message=FALSE, warning=FALSE}
+set.seed(12345)
+N <- 1000
+diff_costs <- rnorm(N, 600, 400)
+diff_eff <- rnorm(N, 3.0, 2.0)
+df <- data.frame(DC = diff_costs, DE = diff_eff)
+
+Scatter <- df %>% 
+  ggplot(aes(x = DC, y = DE)) +
+  geom_point(alpha = 0.6, color = "#003377")+
+  labs(title = "1000 simulations of the cost difference and the effectiveness difference", x = "The Cost difference", y = "The Effectiveness difference")
+  
+print(Scatter)
+
+
+
+n <- 1000
+diff_c <- c()
+diff_e <- c()
+
+for (q in 1:n) {
+diff_cost <- rbind(diff_c, rnorm(n, 600, 400))
+diff_effe <- rbind(diff_e, rnorm(n, 3.0, 2.0))
+}
+
+inc_ratio <- diff_cost/diff_effe
+
+estimate <- mean(inc_ratio)
+se <- sd(inc_ratio)/sqrt(n)
+int50 <- estimate + qt(c(0.25, 0.75), n-1)*se
+int95 <- estimate + qt(c(0.05, 0.95), n-1)*se
+
+print(estimate)
+print(int50)
+print(int95)
+```
+By using simulation, a possible estimate for the incremental cost-effectiveness ratio is 248.776, and a possible 50% interval for the incremental cost-effectiveness ratio is 75.221 and 422.331, and a possible 95% interval for the incremental cost-effectiveness ratio is -174.704 and  672.256.
 ---
