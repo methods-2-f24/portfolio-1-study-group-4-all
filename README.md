@@ -6,3 +6,5 @@ Please complete the assignment in the file `assignment.Rmd`.
 - This is a group assignment
 - Deadline: 10 March 2024, 23:59
 - Please submit your answers on GitHub Classroom
+
+Importent note: This assignment was carried out and submitted by Lisa Falk Frederiksen only, as we deceided not to do it together in the study group (which is number 4, class 1)
