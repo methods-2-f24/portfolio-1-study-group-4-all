@@ -9,6 +9,16 @@ output:
 
 ---
 
+
+!!!!!!!!!IMPORTENT!!!!!!
+I am a part of study group 4, but we did not do this together. So everything in this file was made by Lisa Falk Frederiksen. 
+
+
+
+
+
+
+
 In the following exercises, you will be asked to generate and summarize simulations from statistical models. You should use what you have learned so far (i.e. for loop, if else statements, sampling from continuous and discrete distributions...) to generate observations and summarize your samples using (one of) the appropriate methods. You can find examples of how to do that in Ch. 5. Note that here we will only focus on generative models, several aspects for inference and hypothesis testing discussed in Ch. 4 are not directly needed in this context.
 
 In the first exercise, we will assume that the population of interest has a proportion of 0.51 men and 0.49 women. Your model should reflect that.
